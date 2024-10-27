@@ -21,23 +21,10 @@ jQuery(document).ready(function($) {
 			$navtabs.filter('[data-tabid="'+targetid+'"]').addClass('nav-tab-active');
 			$tabs.removeClass('maghoot-tab-active');
 			$target.addClass('maghoot-tab-active');
-			var destin = $target.offset().top - 150;
-			$("html:not(:animated),body:not(:animated)").animate({ scrollTop: destin}, 200 );
-		}
-	});
-
-	$('#maghoot-welcome-msg .notice-dismiss').on('click',function(e){
-		if( 'undefined' != typeof maghoot_dismissible_notice && 'undefined' != typeof maghoot_dismissible_notice.nonce && 'undefined' != typeof maghoot_dismissible_notice.ajax_action ) {
-			// e.preventDefault();
-			jQuery.ajax({
-				url : ajaxurl, // maghoot_dismissible_notice.ajax_url
-				type : 'post',
-				data : {
-					'action': maghoot_dismissible_notice.ajax_action,
-					'nonce': maghoot_dismissible_notice.nonce
-				},
-				success : function( response ) {}
-			}); //$.post(ajaxurl, data);
+			// Update the URL with the new tab parameter
+			var newUrl = new URL(window.location.href);
+			newUrl.searchParams.set('tab', targetid);
+			history.replaceState(null, null, newUrl.toString());
 		}
 	});
 

@@ -22,6 +22,24 @@ if ( !class_exists( 'Maghoot_Theme' ) ) {
 	class Maghoot_Theme {
 
 		/**
+		 * Store dynamic properties
+		 */
+		private $dynamicprops = array();
+
+		public $blogposts;
+		public $contentblocks;
+		public $currentlayout;
+		public $excerpt_customlength;
+		public $iconlist;
+		public $loop_meta_displayed;
+		public $slider;
+		public $sliderSettings;
+		public $tabset;
+		public $theme;
+		public $topbar_left;
+		public $topbar_right;
+
+		/**
 		 * Constructor method to controls the load order of the required files
 		 *
 		 * @since 1.0
@@ -33,7 +51,7 @@ if ( !class_exists( 'Maghoot_Theme' ) ) {
 			/* Load theme includes. Must keep priority 10 for theme constants to be available. */
 			add_action( 'after_setup_theme', array( $this, 'includes' ), 10 );
 
-			/* Load about page */
+			/* Load the about page. */
 			add_action( 'after_setup_theme', array( $this, 'about' ), 10 );
 
 			/* Theme setup on the 'after_setup_theme' hook. Must keep priority 10 for framework to load properly. */
@@ -78,9 +96,8 @@ if ( !class_exists( 'Maghoot_Theme' ) ) {
 			/* Load the misc template functions. */
 			require_once( HYBRIDEXTEND_INC . 'template-helpers.php' );
 
-			/* Load TGMPA Class */
-			if ( apply_filters( 'maghoot_load_tgmpa', file_exists( HYBRIDEXTEND_INC . 'admin/class-tgm-plugin-activation.php' ) ) )
-				require_once( HYBRIDEXTEND_INC . 'admin/class-tgm-plugin-activation.php' );
+			/* Helper Functions */
+			require_once( HYBRIDEXTEND_INC . 'admin/functions.php' );
 
 			/* Load Customizer Options */
 			$trt = HYBRIDEXTEND_INC . 'admin/trt-customize-pro/class-customize.php';
@@ -99,8 +116,10 @@ if ( !class_exists( 'Maghoot_Theme' ) ) {
 		 */
 		function about() {
 
-			if ( file_exists( HYBRIDEXTEND_INC . 'admin/about.php' ) )
+			if ( apply_filters( 'maghoot_load_about', ( file_exists( HYBRIDEXTEND_INC . 'admin/about.php' ) && file_exists( HYBRIDEXTEND_INC . 'admin/notice.php' ) ) ) ) {
 				require_once( HYBRIDEXTEND_INC . 'admin/about.php' );
+				require_once( HYBRIDEXTEND_INC . 'admin/notice.php' );
+			}
 
 		}
 
@@ -119,6 +138,16 @@ if ( !class_exists( 'Maghoot_Theme' ) ) {
 			if ( file_exists( HYBRIDEXTEND_INC . 'blocks/wpblocks.php' ) )
 				require_once( HYBRIDEXTEND_INC . 'blocks/wpblocks.php' );
 
+		}
+
+		// Magic method to set dynamic properties
+		public function __set($name, $value) {
+			$this->dynamicprops[$name] = $value;
+		}
+
+		// Magic method to get dynamic properties
+		public function __get($name) {
+			return isset($this->dynamicprops[$name]) ? $this->dynamicprops[$name] : null;
 		}
 
 	} // end class

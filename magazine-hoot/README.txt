@@ -2,8 +2,8 @@
 Contributors: wphoot
 Tags: one-column, two-columns, three-columns, left-sidebar, right-sidebar, block-styles, custom-background, custom-colors, custom-menu, custom-logo, featured-images, footer-widgets, full-width-template, microformats, sticky-post, theme-options, threaded-comments, translation-ready, wide-blocks, entertainment, education, news
 Requires at least: 5.4
-Tested up to: 6.1
-Requires PHP: 5.6
+Tested up to: 6.6
+Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
 
@@ -26,6 +26,13 @@ Magazine Hoot is a responsive WordPress theme with a bold modern design. For mor
 You can look at the theme instructions at https://wphoot.com/support/magazine-hoot/ To get support beyond the scope of documentation provided, please open a support ticket via https://wphoot.com/support/
 
 == Changelog ==
+
+= 1.11.0 =
+* # Hybrid 4.0.0 HybridExtend 2.2.10 #
+* Fix "Creation of dynamic property is deprecated" for PHP 8.2
+* Compatibility with Hoot Import plugin
+* Option to load Google Fonts locally
+* Update to google fonts css2
 
 = 1.10.0 =
 * # Hybrid 4.0.0 HybridExtend 2.2.10 #
@@ -460,7 +467,6 @@ You can look at the theme instructions at https://wphoot.com/support/magazine-ho
 * Superfish https://github.com/joeldbirch/superfish/ Copyright Joel Birch : MIT License
 * Font Awesome http://fontawesome.io/ Copyright (c) 2015, Dave Gandy : SIL OFL 1.1 (Font) MIT License (Code)
 * TRT Customizer Pro https://github.com/justintadlock/trt-customizer-pro Copyright 2016 Justin Tadlock : GNU GPL Version 2
-* TGM-Plugin-Activation https://github.com/TGMPA/TGM-Plugin-Activation Copyright (c) 2016 TGM : GNU GPL Version 2
 * Parallax http://pixelcog.com/parallax.js/ Copyright 2016 PixelCog Inc. : MIT License
 
 = This theme screenshot contains the following images =

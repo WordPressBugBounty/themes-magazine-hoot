@@ -115,6 +115,9 @@ if ( !class_exists( 'Hybrid_Extend' ) ) {
 			/* Load Helper functions */
 			require_once( HYBRIDEXTEND_DIR . 'includes/helpers.php' );
 
+			/* Load Helper functions */
+			require_once( HYBRIDEXTEND_DIR . 'includes/fonts.php' );
+
 			/* Load the scripts functions. */
 			require_once( HYBRIDEXTEND_DIR . 'includes/scripts.php' );
 

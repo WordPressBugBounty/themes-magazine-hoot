@@ -16,10 +16,10 @@
  */
 function maghoot_google_fonts_enqueue_url() {
 	$fonts_url = '';
-	$query_args = apply_filters( 'maghoot_google_fonts_enqueue_url_args', array() );
+	$fonts = apply_filters( 'maghoot_google_fonts_preparearray', array() );
+	$args = array();
 
-	/** If no google font loaded, load the default ones **/
-	if ( !is_array( $query_args ) || empty( $query_args ) ):
+	if ( !is_array( $fonts ) || empty( $fonts ) ):
  
 		/* Translators: If there are characters in your language that are not
 		* supported by this font, translate this to 'off'. Do not translate
@@ -38,32 +38,45 @@ function maghoot_google_fonts_enqueue_url() {
 			$font_families = array();
 
 			if ( 'off' !== $roboto ) {
-				$font_families[] = 'Roboto:400,500,700';
+				$fonts[ 'Roboto' ] = array(
+					'normal' => array( '400','500','700' ),
+				);
 			}
 
 			if ( 'off' !== $oswald ) {
-				$font_families[] = 'Oswald:400';
+				$fonts[ 'Oswald' ] = array(
+					'normal' => array( '400' ),
+				);
 			}
 
 			if ( 'off' !== $open_sans ) {
-				$font_families[] = 'Open+Sans:300,400,400i,500,600,700,700i,800';
-			}
-
-			if ( !empty( $font_families ) )
-				$query_args = array(
-					'family' => urlencode( implode( '|', $font_families ) ),
-					//'subset' => urlencode( 'latin,latin-ext' ),
-					'subset' => urlencode( 'latin' ),
+				$fonts[ 'Open Sans' ] = array(
+					'normal' => array( '300','400','500','600','700','800' ),
+					'italic' => array( '400','700' ),
 				);
-
-			$query_args = apply_filters( 'maghoot_google_fonts_query_args', $query_args, $font_families );
+			}
 
 		}
 
 	endif;
+	$fonts = apply_filters( 'maghoot_google_fonts_array', $fonts );
 
-	if ( !empty( $query_args ) && !empty( $query_args['family'] ) )
-		$fonts_url = add_query_arg( $query_args, '//fonts.googleapis.com/css' );
+	foreach ( $fonts as $key => $value ) {
+		if ( is_array( $value ) && ( !empty( $value['normal'] ) || !empty( $value['italic'] ) ) && ( is_array( $value['normal'] ) || is_array( $value['italic'] ) ) ) {
+			$arg = array( 'family' => $key . ':ital,wght@' );
+			if ( !empty( $value['normal'] ) && is_array( $value['normal'] ) ) foreach ( $value['normal'] as $wght ) $arg['family'] .= "0,{$wght};";
+			if ( !empty( $value['italic'] ) && is_array( $value['italic'] ) ) foreach ( $value['italic'] as $wght ) $arg['family'] .= "1,{$wght};";
+			$arg['family'] = substr( $arg['family'], 0, -1 );
+			$args[] = substr( add_query_arg( $arg, '' ), 1 );
+		}
+	}
+
+	if ( !empty( $args ) ) {
+		$fonts_url = 'https://fonts.googleapis.com/css2?' . implode( '&', $args ) . '&display=swap';
+		if ( maghoot_get_mod( 'load_local_fonts' ) ) {
+			$fonts_url = maghoot_wptt_get_webfont_url( esc_url_raw( $fonts_url ) );
+		}
+	}
 
 	return $fonts_url;
 }

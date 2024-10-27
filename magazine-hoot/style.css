@@ -1,13 +1,13 @@
 /*
 Theme Name: Magazine Hoot
-Version: 1.10.0
+Version: 1.11.0
 Text Domain: magazine-hoot
 Author: wpHoot
 Author URI: https://wphoot.com/
 Theme URI: https://wphoot.com/themes/magazine-hoot/
 Requires at least: 5.4
-Tested up to: 6.1
-Requires PHP: 5.6
+Tested up to: 6.6
+Requires PHP: 7.4
 Description: Magazine Hoot is a multicolor news magazine for marketing, education, online, affiliate, content and product sites. It has multiple powerful widgets to display content in various forms. SEO optimized and works with Yoast SEO plugin, Contect Form 7, Jetpack, Google Maps mappress, Page Builder and various other plugins. Theme support is available at https://wphoot.com/support/ You can also check out the theme instructions at https://wphoot.com/support/magazine-hoot/ and demo at https://demo.wphoot.com/magazine-hoot/ for a closer look.
 Tags: one-column, two-columns, three-columns, left-sidebar, right-sidebar, block-styles, custom-background, custom-colors, custom-menu, custom-logo, featured-images, footer-widgets, full-width-template, microformats, sticky-post, theme-options, threaded-comments, translation-ready, wide-blocks, entertainment, education, news
 License: GNU General Public License 3.0
@@ -4963,6 +4963,9 @@ div.lSAction > a.lSPrev:hover {
 .maghoot-cf7-style .wpcf7-form {
   text-transform: uppercase;
   margin: 0.71428571em 0;
+}
+.maghoot-cf7-style .wpcf7-form label + span {
+  display: block;
 }
 .maghoot-cf7-style .wpcf7-form .wpcf7-list-item-label,
 .maghoot-cf7-style .wpcf7-form .wpcf7-quiz-label {

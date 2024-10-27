@@ -54,7 +54,7 @@ add_filter( 'hybrid_attr_comment-content',   'hybridtheme_attr_comment_content',
  */
 function hybridtheme_attr_body( $attr ) {
 
-	$class = apply_filters( 'maghoot_default_body_class', 'maghoot' );
+	$class = apply_filters( 'maghoot_default_body_class', 'magazine-hoot' );
 	$class = is_string( $class ) ? esc_attr( $class ) : '';
 	$attr['class']     = join( ' ', get_body_class( $class ) );
 	$attr['dir']       = is_rtl() ? 'rtl' : 'ltr';

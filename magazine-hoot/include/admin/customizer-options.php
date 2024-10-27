@@ -81,17 +81,17 @@ function maghoot_theme_customizer_options() {
 				 '</span><span class="maghoot-cust-link-desc">' .
 				 __( "Demo the theme features and options with sample content.", 'magazine-hoot') .
 				 '</span></a>';
-	$ocdilink = ( class_exists( 'Maghoot_Theme_Premium' ) ) ? ( ( class_exists( 'OCDI_Plugin' ) ) ? admin_url( 'themes.php?page=pt-one-click-demo-import' ) : 'https://wphoot.com/support/magazine-hoot/#docs-section-demo-content' ) : 'https://wphoot.com/support/magazine-hoot/#docs-section-demo-content-free';
+	$himplink = class_exists( 'HootImport' ) ? esc_url( admin_url( 'themes.php?page=hoot-import' ) ) : ( function_exists( 'maghoot_abouttag' ) ? esc_url( admin_url( 'themes.php?page=' . maghoot_abouttag( 'slug' ) . '-welcome&tab=plugins' ) ) : 'https://wphoot.com/support/magazine-hoot/#docs-section-demo-content' );
 	$lcontent .= '<a class="maghoot-cust-link" href="' .
-				 esc_url( $ocdilink ) .
+				 esc_url( $himplink ) .
 				 '" target="_blank"><span class="maghoot-cust-link-head">' .
 				 '<i class="fas fa-upload"></i> ' .
-				 esc_html__( "1 Click Installation", 'magazine-hoot') . 
+				 esc_html__( "1 Click Demo Content Import", 'magazine-hoot') . 
 				 '</span><span class="maghoot-cust-link-desc">' .
 				 esc_html__( "Install demo content to make your site look exactly like the Demo Site. Use it as a starting point instead of starting from scratch.", 'magazine-hoot') .
 				 '</span></a>';
 	$lcontent .= '<a class="maghoot-cust-link" href="' .
-				 'https://wphoot.com/support/' .
+				 ( function_exists( 'maghoot_abouttag' ) ? esc_url( admin_url( 'themes.php?page=' . maghoot_abouttag( 'slug' ) . '-welcome&tab=qstart' ) ) : 'https://wphoot.com/support/' ) .
 				 '" target="_blank"><span class="maghoot-cust-link-head">' .
 				 '<i class="far fa-life-ring"></i> ' .
 				 __( "Documentation / Support", 'magazine-hoot') . 
@@ -670,6 +670,15 @@ function maghoot_theme_customizer_options() {
 	$sections[ $section ] = array(
 		'title'       => __( 'Typography', 'magazine-hoot' ),
 		// 'description' => __( 'The premium version offers complete typography control (color, style, size) for various headings, header, menu, footer, widgets, content sections etc (over 600 Google Fonts to chose from)', 'magazine-hoot' ),
+	);
+
+	$settings['load_local_fonts'] = array(
+		'label'       => esc_html__( 'Load webfonts locally', 'magazine-hoot' ),
+		'section'     => $section,
+		'type'        => 'checkbox',
+		'default'     => 0,
+		'description' => esc_html__( 'Enable this to load Google Fonts (if used) from your own site instead of Google servers.', 'magazine-hoot' ),
+		'priority'    => 243,
 	);
 
 	$settings['logo_fontface'] = array(

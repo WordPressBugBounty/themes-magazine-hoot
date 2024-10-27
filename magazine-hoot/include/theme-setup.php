@@ -102,13 +102,32 @@ if ( class_exists( 'WooCommerce' ) ) {
 }
 
 
-/** One click demo import **/
+/** Hoot Import plugin **/
 
-// Disable branding
-add_filter( 'pt-ocdi/disable_pt_branding', 'maghoot_theme_disable_pt_branding' );
-function maghoot_theme_disable_pt_branding() {
-	return true;
+// theme config
+if ( ! function_exists( 'maghoot_hootimport_theme_config' ) ) {
+	function maghoot_hootimport_theme_config( $config ) {
+		$child = defined( 'HYBRIDEXTEND_CHILDTHEME_NAME' ) ? HYBRIDEXTEND_CHILDTHEME_NAME : '';
+		$is_official_child = false;
+		if ( $child ) {
+			$checks = apply_filters( 'maghoot_hootimport_theme_config_childtheme_array', array() );
+			foreach ( $checks as $check ) {
+				if ( stripos( $child, $check ) !== false ) {
+					$is_official_child = true;
+					break;
+				}
+			}
+		}
+		return ( $is_official_child ) ? $config : array_merge( $config, array(
+			'id' => 'magazine-hoot', // *required // used for parent and unofficial child themes
+			'menu_title' => __( 'Import Magazine Hoot Demo', 'magazine-hoot' ),
+			'theme_name' => HYBRIDEXTEND_THEME_NAME,
+			'theme_version' => HYBRIDEXTEND_THEME_VERSION,
+			'theme_img' => ( function_exists( 'maghoot_abouttag' ) ? maghoot_abouttag( 'fullshot' ) : '' ),
+		) );
+	}
 }
+add_filter( 'hootimport_theme_config', 'maghoot_hootimport_theme_config', 5 );
 
 
 /* === Tribe The Events Calendar Plugin === */
@@ -291,31 +310,3 @@ function maghoot_custom_excerpt_length( $length ) {
 		return $excerpt_length;
 	return 50;
 }
-
-/**
- * Register recommended plugins via TGMPA
- *
- * @since 1.9
- * @return void
- */
-function maghoot_tgmpa_plugins() {
-	$plugins = array();
-
-	$wpv = get_bloginfo( 'version' );
-	if ( version_compare( $wpv, '5.8', '>=' ) ) {
-		$plugins[] = array(
-			'name'     => __( 'Classic Widgets', 'magazine-hoot' ),
-			'slug'     => 'classic-widgets',
-			'required' => false,
-		);
-	}
-	$plugins = apply_filters( 'maghoot_tgmpa_plugins', $plugins );
-
-	// Array of configuration settings.
-	$config = array(
-		'is_automatic' => true,
-	);
-	// Register plugins with TGM_Plugin_Activation class
-	tgmpa( $plugins, $config );
-}
-// add_filter( 'tgmpa_register', 'maghoot_tgmpa_plugins' );

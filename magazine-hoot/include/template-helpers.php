@@ -861,7 +861,7 @@ function maghoot_main_layout( $context, $return = 'size' ) {
 
 	// Set layout
 	global $maghoot_theme;
-	if ( !isset( $maghoot_theme->currentlayout ) )
+	if ( empty( $maghoot_theme->currentlayout ) )
 		maghoot_set_main_layout();
 
 	$span_sidebar = $maghoot_theme->currentlayout['sidebar'];

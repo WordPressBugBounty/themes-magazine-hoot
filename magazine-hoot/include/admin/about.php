@@ -1,17 +1,7 @@
 <?php
 /**
- * About/Welcome page
- *
- * @package    Hoot
- * @subpackage Magazine Hoot
+ * About page
  */
-
-/** Determine whether to load about subpage **/
-if ( ! apply_filters( 'maghoot_load_about_subpage', true ) )
-	return;
-
-/* Add the admin setup function to the 'admin_menu' hook. */
-add_action( 'admin_menu', 'maghoot_appearance_subpage' );
 
 /**
  * Sets up the Appearance Subpage
@@ -20,71 +10,22 @@ add_action( 'admin_menu', 'maghoot_appearance_subpage' );
  * @access public
  * @return void
  */
-function maghoot_appearance_subpage() {
+function maghoot_add_appearance_subpage() {
 
 	add_theme_page(
-		__( 'Magazine Hoot', 'magazine-hoot' ), // Page Title
-		__( 'About Theme Options', 'magazine-hoot' ), // Menu Title
+		maghoot_abouttag( 'label' ), // Page Title
+		maghoot_abouttag( 'label' ), // Menu Title
 		'edit_theme_options', // capability
-		'magazine-hoot-welcome', // menu-slug
-		'maghoot_theme_appearance_subpage' // function name
+		maghoot_abouttag( 'slug' ) . '-welcome', // menu-slug
+		'maghoot_appearance_subpage', // function name
+		1 // position
 		);
 
-	add_action( 'admin_enqueue_scripts', 'maghoot_admin_enqueue_upsell_styles' );
+	add_action( 'admin_enqueue_scripts', 'maghoot_admin_enqueue_about_styles' );
 
 }
-
-/**
- * Add a welcome notice if not already dismissed
- *
- * @since 1.7
- * @access public
- * @return void
- */
-function maghoot_theme_welcome_notice(){
-	if ( isset( $_GET['page'] ) && $_GET['page'] == 'magazine-hoot-welcome' )
-		return;
-	if ( ! get_option( 'magazine-hoot-dismiss-welcome' ) ) {
-		add_action( 'admin_notices', 'maghoot_theme_add_welcome_notice' );
-	}
-}
-add_action( 'admin_head', 'maghoot_theme_welcome_notice' );
-
-/**
- * Display admin notice
- *
- * @since 1.7
- * @access public
- * @return void
- */
-function maghoot_theme_add_welcome_notice() {
-	?>
-	<div id="maghoot-welcome-msg" class="notice notice-success is-dismissible">
-		<p><?php
-			/* Translators: 1 is the link start markup, 2 is link markup end */
-			printf( esc_html__( 'Thank you for choosing Magazine Hoot! To get started and fully take advantage of our theme, please make sure you visit the welcome page for the %1$sQuick Start Guide%2$s.', 'magazine-hoot' ), '<a href="' . esc_url( admin_url( 'themes.php?page=magazine-hoot-welcome&tab=qstart' ) ) . '">', '</a>' );
-			?></p>
-		<p><?php
-			/* Translators: 1 is the link start markup, 2 is link markup end */
-			printf( esc_html__( '%1$sGet started with Magazine Hoot%2$s', 'magazine-hoot' ), '<a class="button-secondary" href="' . esc_url( admin_url( 'themes.php?page=magazine-hoot-welcome&tab=qstart' ) ) . '">', '</a>' );
-			?></p>
-	</div>
-	<?php
-}
-
-/**
- * Ajax callback to set dismissable notice
- *
- * @since 1.7
- * @access public
- * @return void
- */
-function maghoot_theme_dismiss_welcome_notice() {
-	check_ajax_referer( 'dismiss-hoottheme-welcome', 'nonce' );
-	update_option( 'magazine-hoot-dismiss-welcome', 1 );
-	wp_die();
-}
-add_action( 'wp_ajax_maghoot_theme_dismiss_welcome_notice', 'maghoot_theme_dismiss_welcome_notice' );
+/* Add the admin setup function to the 'admin_menu' hook. */
+add_action( 'admin_menu', 'maghoot_add_appearance_subpage' );
 
 /**
  * Enqueue CSS
@@ -93,15 +34,12 @@ add_action( 'wp_ajax_maghoot_theme_dismiss_welcome_notice', 'maghoot_theme_dismi
  * @access public
  * @return void
  */
-function maghoot_admin_enqueue_upsell_styles( $hook ) {
-	if ( $hook == 'appearance_page_magazine-hoot-welcome' )
-		wp_enqueue_style( 'maghoot-admin-about', HYBRIDEXTEND_INCURI . 'admin/css/about.css', array(),  HYBRIDEXTEND_VERSION );
-	wp_enqueue_script( 'maghoot-admin-about', HYBRIDEXTEND_INCURI . 'admin/js/about.js', array( 'jquery' ),  HYBRIDEXTEND_VERSION, true );
-	wp_localize_script( 'maghoot-admin-about', 'maghoot_dismissible_notice', array(
-							'ajax_url' => esc_url( admin_url( 'admin-ajax.php' ) ),
-							'ajax_action' => 'maghoot_theme_dismiss_welcome_notice',
-							'nonce' => wp_create_nonce( 'dismiss-hoottheme-welcome' ),
-						) );
+function maghoot_admin_enqueue_about_styles( $hook ) {
+	$slug = maghoot_abouttag( 'slug' );
+	if ( $hook === "appearance_page_{$slug}-welcome" ) {
+		wp_enqueue_style( 'maghoot-admin-about', HYBRIDEXTEND_INCURI . 'admin/css/about.css', array(), HYBRIDEXTEND_VERSION );
+		wp_enqueue_script( 'maghoot-admin-about', HYBRIDEXTEND_INCURI . 'admin/js/about.js', array( 'jquery' ), HYBRIDEXTEND_VERSION, true );
+	}
 }
 
 /**
@@ -111,42 +49,44 @@ function maghoot_admin_enqueue_upsell_styles( $hook ) {
  * @access public
  * @return void
  */
-function maghoot_theme_appearance_subpage() {
-	$activetab = 'upsell';
-	if ( !empty( $_GET['tab'] ) )
-		$activetab = ( $_GET['tab'] == 'import' ) ? 'import' : ( ( $_GET['tab'] == 'qstart' ) ? 'qstart' : $activetab );
+function maghoot_appearance_subpage() {
+	$slug = maghoot_abouttag( 'slug' );
+	$themename = maghoot_abouttag( 'name' );
+	$themelabel = maghoot_abouttag( 'label' );
+	$version = maghoot_abouttag( 'vers' );
+	$screenshot = maghoot_abouttag( 'shot' );
+
+	$hasupsell = apply_filters( 'maghoot_load_upsell', true );
+	$default_tabs = array( 'qstart', 'plugins' );
+	if ( $hasupsell ) $default_tabs[] = 'upsell';
+	$availabletabs = apply_filters( 'maghoot_about_load_tabs', $default_tabs );
+	if ( ! is_array( $availabletabs ) ) $availabletabs = $default_tabs;
+	$activetab = !empty( $_GET['tab'] ) && in_array( $_GET['tab'], $availabletabs ) ? $_GET['tab'] : ( $hasupsell ? 'upsell' : 'qstart' );
 	?>
 	<div class="wrap">
 
 		<h1 class="maghoot-about-title"><?php
-			/* Translators: 1 is the theme name, 2 is the theme version */
-			printf( esc_html__( 'About %1$s %2$s', 'magazine-hoot' ), HYBRIDEXTEND_THEME_NAME, HYBRIDEXTEND_THEME_VERSION );
+			/* Translators: 1 is the theme name */
+			printf( esc_html__( 'About %1$s', 'magazine-hoot' ), HYBRIDEXTEND_THEME_NAME );
 			?></h1>
 
 		<div id="maghoot-about-sub" class="maghoot-about-sub">
-			<div class="maghoot-about-ss"><img src="<?php echo esc_url( HYBRID_PARENT_URI . 'screenshot.jpg' )  ?>"></div>
+			<div class="maghoot-about-ss"><?php if ( !empty( $screenshot ) ) echo '<img src="' . esc_url( $screenshot ) . '">'; ?></div>
 			<div class="maghoot-about-text">
-				<p class="maghoot-about-intro"><?php esc_html_e( 'Magazine Hoot is a highly flexible and customizable newspaper and magazine style theme with lightening fast loading speed built on a SEO friendly framework. Supports popular plugins like WooCommerce, Contact Form 7, Mappress, Newsletter etc.', 'magazine-hoot' ) ?></p>
+				<p class="maghoot-about-intro"><?php 
+					/* Translators: 1 is the theme name */
+					printf( esc_html__( '%1$s is a highly flexible and customizable newspaper and magazine style theme with lightening fast loading speed built on a SEO friendly framework. Supports popular plugins like WooCommerce, Contact Form 7, Mappress, Newsletter etc.', 'magazine-hoot' ), $themename );
+					?></p>
 				<p class="maghoot-about-textlinks">
+					<?php if ( $hasupsell ) : ?>
 					<a class="button button-primary" href="https://wphoot.com/themes/magazine-hoot/" target="_blank"><span class="dashicons dashicons-dashboard"></span> <?php esc_html_e( 'View Premium', 'magazine-hoot' ) ?></a>
-					<a class="button" href="https://demo.wphoot.com/magazine-hoot/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo', 'magazine-hoot' ) ?></a>
+					<?php endif; ?>
+					<a class="button" href="https://demo.wphoot.com/JNES@SLUG/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo', 'magazine-hoot' ) ?></a>
 					<a class="button" href="https://wphoot.com/support/magazine-hoot/" target="_blank"><span class="dashicons dashicons-editor-aligncenter"></span> <?php esc_html_e( 'Documentation', 'magazine-hoot' ) ?></a>
 					<a class="button" href="https://wphoot.com/support/" target="_blank"><span class="dashicons dashicons-sos"></span> <?php esc_html_e( 'Get Support', 'magazine-hoot' ) ?></a>
-					<a class="button" href="https://wordpress.org/support/theme/magazine-hoot/reviews/#new-post" target="_blank"><span class="dashicons dashicons-thumbs-up"></span> <?php esc_html_e( 'Rate Us', 'magazine-hoot' ) ?></a>
+					<a class="button" href="https://wordpress.org/support/theme/JNES@SLUG/reviews/#new-post" target="_blank"><span class="dashicons dashicons-thumbs-up"></span> <?php esc_html_e( 'Rate Us', 'magazine-hoot' ) ?></a>
 				</p>
-				<?php do_action( 'maghoot_theme_after_about_textlinks', 'magazine-hoot' ); ?>
-				<?php /*
-				<div class="maghoot-about-notice2">
-					<h3><?php esc_html_e( '1 Click Demo Installation', 'magazine-hoot' ) ?></h3>
-					<p><?php
-						/* Translators: The %s are placeholders for HTML, so the order can't be changed. *//*
-						printf( esc_html__( 'Use the OCDI plugin to install demo content with a single click to make your site look exactly like the %1$sDemo Site%2$s.%3$sNew users often find it easier to edit existing content rather than starting from scratch.', 'magazine-hoot' ), '<a href="https://demo.wphoot.com/magazine-hoot/" target="_blank">', '</a>', '<br />' );
-					?></p>
-					<p class="maghoot-about-textlinks">
-						<a class="button" href="https://wphoot.com/support/magazine-hoot/#docs-section-demo-content-free" target="_blank"><span class="dashicons dashicons-art"></span> <?php esc_html_e( 'Install Demo Content', 'magazine-hoot' ) ?></a>
-					</p>
-				</div>
-				*/ ?>
+				<?php do_action( 'maghoot_theme_after_about_textlinks', $slug ); ?>
 			</div>
 			<div class="clear"></div>
 		</div><!-- .maghoot-about-sub -->
@@ -154,34 +94,43 @@ function maghoot_theme_appearance_subpage() {
 		<div class="maghoot-abouttabs">
 
 			<h2 id="nav-tabs" class="nav-tab-wrapper">
-				<span class="nav-tab nav-upsell <?php if ( $activetab == 'upsell' ) echo 'nav-tab-active'; ?>" data-tabid="upsell"><?php esc_html_e( 'Premium Options', 'magazine-hoot' ) ?></span>
-				<?php do_action( 'maghoot_theme_after_nav_tab_upsell', 'magazine-hoot', $activetab ); ?>
-				<span class="nav-tab nav-qstart <?php if ( $activetab == 'qstart' ) echo 'nav-tab-active'; ?>" data-tabid="qstart"><?php esc_html_e( 'Quick Start Guide', 'magazine-hoot' ) ?></span>
+				<?php if ( $hasupsell ) : ?>
+				<span class="nav-tab nav-upsell <?php if ( $activetab === 'upsell' ) echo 'nav-tab-active'; ?>" data-tabid="upsell"><?php esc_html_e( 'Premium Options', 'magazine-hoot' ) ?></span>
+				<?php endif; ?>
+				<span class="nav-tab nav-qstart <?php if ( $activetab === 'qstart' ) echo 'nav-tab-active'; ?>" data-tabid="qstart"><?php esc_html_e( 'Quick Start Guide', 'magazine-hoot' ) ?></span>
+				<span class="nav-tab nav-plugins <?php if ( $activetab === 'plugins' ) echo 'nav-tab-active'; ?>" data-tabid="plugins"><?php esc_html_e( 'Theme Plugins', 'magazine-hoot' ) ?></span>
+				<?php do_action( 'maghoot_about_tabs', $activetab ); ?>
 			</h2>
 
+			<?php if ( $hasupsell ) : ?>
 			<div id="maghoot-upsell" class="maghoot-upsell maghoot-tab <?php if ( $activetab == 'upsell' ) echo 'maghoot-tab-active'; ?>">
 				<h2 class="centered allcaps"><?php
 					/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
-					printf( esc_html__( 'Upgrade to %1$sMagazine Hoot %2$sPremium%3$s%4$s', 'magazine-hoot' ), '<span>', '<strong>', '</strong>', '</span>' );
+					printf( esc_html__( 'Do more with %2$s%1$s %3$sPremium%4$s%5$s', 'magazine-hoot' ), $themename, '<span>', '<strong>', '</strong>', '</span>' );
 					?></h2>
 				<p class="maghoot-tab-intro centered"><?php
 					/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
-					printf( esc_html__( 'If you have enjoyed using Magazine Hoot, you are going to love %1$sMagazine Hoot Premium%2$s.%3$sIt is a robust upgrade to Magazine Hoot that gives you many useful features.', 'magazine-hoot' ), '<strong>', '</strong>', '<br />' );
+					printf( esc_html__( 'If you have enjoyed using %1$s, you are going to love %2$s%1$s Premium%3$s.%4$sIt is a robust upgrade to %1$s that gives you many useful features.', 'magazine-hoot' ), $themename, '<strong>', '</strong>', '<br />' );
 					?></p>
 				<p class="maghoot-tab-cta centered">
-					<a class="button button-secondary secondary-cta" href="https://demo.wphoot.com/magazine-hoot/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo Site', 'magazine-hoot' ) ?></a>
-					<a class="button button-primary primary-cta" href="https://wphoot.com/themes/magazine-hoot/" target="_blank"><span class="dashicons dashicons-dashboard"></span> <?php esc_html_e( 'Buy Magazine Hoot Premium', 'magazine-hoot' ) ?></a>
+					<a class="button button-secondary secondary-cta" href="https://demo.wphoot.com/JNES@SLUG/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo Site', 'magazine-hoot' ) ?></a>
+					<a class="button button-primary primary-cta" href="https://wphoot.com/themes/magazine-hoot/" target="_blank"><span class="dashicons dashicons-dashboard"></span> <?php
+						/* Translators: 1 is the theme name */
+						printf( esc_html__( 'Buy %1$s Premium', 'magazine-hoot' ), $themename );
+						?></a>
 				</p>
 				<div class="maghoot-tab-sub"><div class="maghoot-tab-subinner">
-					<?php maghoot_theme_tabsections( 'features' ); ?>
+					<?php maghoot_tabsections( 'features' ); ?>
 					<div class="tabsection maghoot-tab-cta centered">
-						<a class="button button-secondary secondary-cta" href="https://demo.wphoot.com/magazine-hoot/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo Site', 'magazine-hoot' ) ?></a>
-						<a class="button button-primary primary-cta" href="https://wphoot.com/themes/magazine-hoot/" target="_blank"><span class="dashicons dashicons-dashboard"></span> <?php esc_html_e( 'Buy Magazine Hoot Premium', 'magazine-hoot' ) ?></a>
+						<a class="button button-secondary secondary-cta" href="https://demo.wphoot.com/JNES@SLUG/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo Site', 'magazine-hoot' ) ?></a>
+						<a class="button button-primary primary-cta" href="https://wphoot.com/themes/magazine-hoot/" target="_blank"><span class="dashicons dashicons-dashboard"></span> <?php
+							/* Translators: 1 is the theme name */
+							printf( esc_html__( 'Buy %1$s Premium', 'magazine-hoot' ), $themename );
+							?></a>
 					</div>
 				</div></div><!-- .maghoot-tab-sub -->
 			</div><!-- #maghoot-upsell -->
-
-			<?php do_action( 'maghoot_theme_after_maghoot_upsell', 'magazine-hoot', $activetab ); ?>
+			<?php endif; ?>
 
 			<div id="maghoot-qstart" class="maghoot-qstart maghoot-tab <?php if ( $activetab == 'qstart' ) echo 'maghoot-tab-active'; ?>">
 				<h2 class="centered allcaps"><span class="dashicons dashicons-clock"></span> <?php esc_html_e( 'Quick Start Guide', 'magazine-hoot' ); ?></h2>
@@ -194,13 +143,63 @@ function maghoot_theme_appearance_subpage() {
 					<a class="button button-secondary secondary-cta" href="https://wphoot.com/support/" target="_blank"><span class="dashicons dashicons-sos"></span> <?php esc_html_e( 'Get Support', 'magazine-hoot' ) ?></a>
 				</p>
 				<div class="maghoot-tab-sub maghoot-qstart-sub"><div class="maghoot-tab-subinner">
-					<?php maghoot_theme_tabsections( 'quickstart' ); ?>
+					<?php maghoot_tabsections( 'quickstart' ); ?>
 					<div class="tabsection maghoot-tab-cta centered">
 						<a class="button button-primary primary-cta" href="https://wphoot.com/support/magazine-hoot/" target="_blank"><span class="dashicons dashicons-editor-aligncenter"></span> <?php esc_html_e( 'View Full Documentation', 'magazine-hoot' ) ?></a>
 						<a class="button button-secondary secondary-cta" href="https://wphoot.com/support/" target="_blank"><span class="dashicons dashicons-sos"></span> <?php esc_html_e( 'Get Support', 'magazine-hoot' ) ?></a>
 					</div>
 				</div></div><!-- .maghoot-tab-sub -->
 			</div><!-- #maghoot-qstart -->
+
+			<div id="maghoot-plugins" class="maghoot-plugins maghoot-tab <?php if ( $activetab == 'plugins' ) echo 'maghoot-tab-active'; ?>">
+
+				<div class="wp-list-table widefat plugin-install">
+					<div id="the-list">
+
+						<?php $import_config = apply_filters( 'hootimport_theme_config', array() ); // Hoot Import has been configured for active theme
+						if ( ! empty( $import_config ) ) : ?>
+						<div class="plugin-card">
+							<div class="plugin-card-top">
+								<div class="name column-name">
+									<h3><?php esc_html_e( 'Hoot Import', 'magazine-hoot' ) ?><img src="https://s.w.org/plugins/geopattern-icon/hoot-import.svg" class="plugin-icon" alt=""></h3>
+								</div>
+								<div class="action-links">
+									<ul class="plugin-action-buttons">
+										<li><?php
+											if ( class_exists( 'HootImport' ) ) {
+												echo '<button type="button" class="button button-disabled" disabled="disabled">' . esc_html( 'Active', 'magazine-hoot' ) . '</button>';
+											} else {
+												echo '<a href="#" class="maghoot-btn-processplugin button button-primary maghoot-btn-smallmsg">';
+													if ( file_exists( WP_PLUGIN_DIR . '/hoot-import/hoot-import.php' ) )
+														esc_html_e( 'Activate', 'magazine-hoot' );
+													else
+														esc_html_e( 'Install', 'magazine-hoot' );
+												echo '</a>';
+											}
+										?></li>
+										<li><?php
+											/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
+											echo sprintf( esc_html__( '%1$sView Details%2$s', 'magazine-hoot' ), '<a href="https://wordpress.org/plugins/hoot-import/" target="_blank">', '</a>' );
+										?></li>
+									</ul>
+								</div>
+								<div class="desc column-description">
+									<p><?php esc_html_e( 'This plugin helps you import the demo data to help you get familiar with the theme.', 'magazine-hoot' ); ?></p>
+									<p class="authors"><cite><?php
+										/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
+										echo sprintf( esc_html__( 'By %1$swpHoot%2$s', 'magazine-hoot' ), '<a href="https://wphoot.com">', '</a>' );
+									?></cite></p>
+								</div>
+							</div>
+						</div>
+						<?php endif; ?>
+
+					</div>
+				</div>
+
+			</div><!-- #maghoot-plugins -->
+
+			<?php do_action( 'maghoot_about_tabcontent', $activetab ); ?>
 
 
 		</div><!-- .maghoot-abouttabs -->
@@ -216,9 +215,9 @@ function maghoot_theme_appearance_subpage() {
  * @access public
  * @return mixed
  */
-function maghoot_theme_tabsections( $string ) {
+function maghoot_tabsections( $string ) {
 	if ( in_array( $string, array( 'features', 'quickstart' ) ) ) :
-		$features = maghoot_theme_upstrings( $string );
+		$features = maghoot_upstrings( $string );
 		if ( !empty( $features ) && is_array( $features ) ) :
 			foreach ( $features as $key => $feature ) :
 				$style = empty( $feature['style'] ) ? 'std' : $feature['style'];
@@ -232,7 +231,7 @@ function maghoot_theme_tabsections( $string ) {
 
 					<?php if ( $style == 'hero-top' || $style == 'hero-bottom' ) :
 						if ( $style == 'hero-top' ) : ?>
-							<h4 class="heading"><?php echo $feature['name']; ?></h4>
+							<h4 class="heading"><?php echo $feature['name']; ?><cite><span><?php esc_html_e( '* Premium Feature', 'magazine-hoot' ) ?></span></cite></h4>
 							<?php if ( !empty( $feature['desc'] ) ) echo '<div class="tabsection-hero-text">' . $feature['desc'] . '</div>'; ?>
 						<?php endif; ?>
 						<?php if ( !empty( $feature['img'] ) ) : ?>
@@ -241,7 +240,7 @@ function maghoot_theme_tabsections( $string ) {
 							</div>
 						<?php endif; ?>
 						<?php if ( $style == 'hero-bottom' ) : ?>
-							<h4 class="heading"><?php echo $feature['name']; ?></h4>
+							<h4 class="heading"><?php echo $feature['name']; ?><cite><span><?php esc_html_e( '* Premium Feature', 'magazine-hoot' ) ?></span></cite></h4>
 							<?php if ( !empty( $feature['desc'] ) ) echo '<div class="tabsection-hero-text">' . $feature['desc'] . '</div>'; ?>
 						<?php endif; ?>
 
@@ -252,7 +251,7 @@ function maghoot_theme_tabsections( $string ) {
 							</div>
 							<div class="tabsection-side-textblock">
 								<?php if ( !empty( $feature['name'] ) ) : ?>
-									<h4 class="heading"><?php echo $feature['name']; ?></h4>
+									<h4 class="heading"><?php echo $feature['name']; ?><cite><span><?php esc_html_e( '* Premium Feature', 'magazine-hoot' ) ?></span></cite></h4>
 								<?php endif; ?>
 								<?php if ( !empty( $feature['desc'] ) ) echo '<div class="tabsection-side-text">' . $feature['desc'] . '</div>'; ?>
 							</div>
@@ -270,7 +269,7 @@ function maghoot_theme_tabsections( $string ) {
 										</div>
 									<?php endif;
 									if ( !empty( $block['name'] ) ) : ?>
-										<h4 class="heading"><?php echo $block['name']; ?></h4>
+										<h4 class="heading"><?php echo $block['name']; ?><cite><span><?php esc_html_e( '* Premium Feature', 'magazine-hoot' ) ?></span></cite></h4>
 									<?php endif;
 									if ( !empty( $block['desc'] ) ) echo '<div class="tabsection-aside-text">' . $block['desc'] . '</div>';
 								echo '</div>';
@@ -287,7 +286,7 @@ function maghoot_theme_tabsections( $string ) {
 						<?php endif; ?>
 						<div class="tabsection-std-textblock <?php if ( $style == 'img-bottom' ) echo 'attop'; else echo 'atbottom'; ?>">
 							<?php if ( !empty( $feature['name'] ) ) : ?>
-								<div class="tabsection-std-heading"><h4 class="heading"><?php echo $feature['name']; ?></h4></div>
+								<div class="tabsection-std-heading"><h4 class="heading"><?php echo $feature['name']; ?><cite><span><?php esc_html_e( '* Premium Feature', 'magazine-hoot' ) ?></span></cite></h4></div>
 							<?php endif; ?>
 							<?php if ( !empty( $feature['desc'] ) ) echo '<div class="tabsection-std-text">' . $feature['desc'] . '</div>'; ?>
 							<div class="clear"></div>
@@ -313,22 +312,26 @@ function maghoot_theme_tabsections( $string ) {
  * @access public
  * @return mixed
  */
-function maghoot_theme_upstrings( $string ) {
+function maghoot_upstrings( $string ) {
 
 	$features = $quickstart = array();
 	$imagepath =  esc_url( HYBRIDEXTEND_INCURI . 'admin/images/' );
+	$slug = maghoot_abouttag( 'slug' );
+	$themename = maghoot_abouttag( 'name' );
 
 	$features[] = array(
 		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
 		'name' => sprintf( esc_html__( 'Complete %1$sStyle %2$sCustomization%3$s', 'magazine-hoot' ), '<br />', '<strong>', '</strong>' ),
-		'desc' => esc_html__( 'Different looks and styles. Choose from an extensive range of customization features in Magazine Hoot Premium to setup your own unique front page. Give youe site the personality it deserves.', 'magazine-hoot' ),
+		/* Translators: 1 is the theme name */
+		'desc' => sprintf( esc_html__( 'Different looks and styles. Choose from an extensive range of customization features in %1$s Premium to setup your own unique front page. Give youe site the personality it deserves.', 'magazine-hoot' ), $themename ),
 		// 'img' => $imagepath . 'premium-style.jpg',
 		'style' => 'hero-top',
 		);
 
 	$features[] = array(
 		'name' => esc_html__( 'Custom Colors &amp; Backgrounds for Sections', 'magazine-hoot' ),
-		'desc' => esc_html__( 'Magazine Hoot Premium lets you select custom colors and backgrounds for different sections of your site like header, footer, logo background, menu dropdown, content area, page title area etc.', 'magazine-hoot' ),
+		/* Translators: 1 is the theme name */
+		'desc' => sprintf( esc_html__( '%1$s Premium lets you select custom colors and backgrounds for different sections of your site like header, footer, logo background, menu dropdown, content area, page title area etc.', 'magazine-hoot' ), $themename ),
 		'img' => $imagepath . 'premium-colors.jpg',
 		);
 
@@ -348,15 +351,15 @@ function maghoot_theme_upstrings( $string ) {
 	$features[] = array(
 		'name' => esc_html__( 'Unlimites Sliders, Unlimites Slides', 'magazine-hoot' ),
 		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
-		'desc' => sprintf( esc_html__( 'Magazine Hoot Premium allows you to create unlimited sliders with as many slides as you need.%1$s%2$sAdd as Shortcodes%3$sYou can use these sliders on your Frontpage, or add them anywhere using shortcodes - like in your Posts, Sidebars or Footer.', 'magazine-hoot' ), '<hr>', '<h4>', '</h4>' ),
+		'desc' => sprintf( esc_html__( '%1$s Premium allows you to create unlimited sliders with as many slides as you need.%2$s%3$sAdd as Shortcodes%4$sYou can use these sliders on your Frontpage, or add them anywhere using shortcodes - like in your Posts, Sidebars or Footer.', 'magazine-hoot' ), $themename, '<hr>', '<h4>', '</h4>' ),
 		'img' => $imagepath . 'premium-sliders.jpg',
 		);
 
 	$features[] = array(
 		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
 		'name' => sprintf( esc_html__( 'Shortcodes with %1$sEasy Generator%2$s', 'magazine-hoot' ), '<span>', '</span>' ),
-		/* Translators: The %s is placeholders for line break divider. */
-		'desc' => sprintf( esc_html__( 'Enjoy the flexibility of using shortcodes throughout your site with Magazine Hoot premium. These shortcodes were specially designed for this theme and are very well integrated into the code to reduce loading times, thereby maximizing performance!%1$sUse shortcodes to insert buttons, sliders, tabs, toggles, columns, breaks, icons, lists, and a lot more design and layout modules.%1$sThe intuitive Shortcode Generator has been built right into the Edit screen, so you dont have to hunt for shortcode syntax.', 'magazine-hoot' ), '<hr>' ),
+		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
+		'desc' => sprintf( esc_html__( 'Enjoy the flexibility of using shortcodes throughout your site with %1$s premium. These shortcodes were specially designed for this theme and are very well integrated into the code to reduce loading times, thereby maximizing performance! %2$sUse shortcodes to insert buttons, sliders, tabs, toggles, columns, breaks, icons, lists, and a lot more design and layout modules. %2$sThe intuitive Shortcode Generator has been built right into the Edit screen, so you dont have to hunt for shortcode syntax.', 'magazine-hoot' ), $themename, '<hr>' ),
 		'img' => $imagepath . 'premium-shortcodes.jpg',
 		);
 
@@ -386,13 +389,15 @@ function maghoot_theme_upstrings( $string ) {
 	$features[] = array(
 		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
 		'name' => sprintf( esc_html__( 'Additional Blog Layouts (including pinterest %1$stype mosaic)%2$s', 'magazine-hoot' ), '<span>', '</span>' ),
-		'desc' => esc_html__( 'Magazine Hoot Premium gives you the option to display your post archives in different layouts including a mosaic type layout similar to pinterest.', 'magazine-hoot' ),
+		/* Translators: 1 is the theme name */
+		'desc' => sprintf( esc_html__( '%1$s Premium gives you the option to display your post archives in different layouts including a mosaic type layout similar to pinterest.', 'magazine-hoot' ), $themename ),
 		'img' => $imagepath . 'premium-blogstyles.jpg',
 		);
 
 	$features[] = array(
 		'name' => esc_html__( 'Custom Widgets', 'magazine-hoot' ),
-		'desc' => esc_html__( 'Custom widgets crafted and designed specifically for Magazine Hoot Premium Theme to give you the flexibility of adding stylized content.', 'magazine-hoot' ),
+		/* Translators: 1 is the theme name */
+		'desc' => sprintf( esc_html__( 'Custom widgets crafted and designed specifically for %1$s Premium Theme to give you the flexibility of adding stylized content.', 'magazine-hoot' ), $themename ),
 		'img' => $imagepath . 'premium-widgets.jpg',
 		);
 
@@ -404,7 +409,8 @@ function maghoot_theme_upstrings( $string ) {
 
 	$features[] = array(
 		'name' => esc_html__( 'Premium Background Patterns (CC0)', 'magazine-hoot' ),
-		'desc' => esc_html__( 'Magazine Hoot Premium comes with many additional premium background patterns. You can always upload your own background image/pattern to match your site design.', 'magazine-hoot' ),
+		/* Translators: 1 is the theme name */
+		'desc' => sprintf( esc_html__( '%1$s Premium comes with many additional premium background patterns. You can always upload your own background image/pattern to match your site design.', 'magazine-hoot' ), $themename ),
 		// 'img' => $imagepath . 'premium-backgrounds.jpg',
 		);
 
@@ -412,14 +418,15 @@ function maghoot_theme_upstrings( $string ) {
 		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
 		'name' => sprintf( esc_html__( 'Automatic Image Lightbox and %1$sWordPress Gallery%2$s', 'magazine-hoot' ), '<span>', '</span>' ),
 		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
-		'desc' => sprintf( esc_html__( 'Automatically open image links on your site with the integrates lightbox in Magazine Hoot Premium.%1$sAutomatically convert standard WordPress galleries to beautiful lightbox gallery slider.', 'magazine-hoot' ), '<hr>' ),
+		'desc' => sprintf( esc_html__( 'Automatically open image links on your site with the integrates lightbox in %1$s Premium.%2$sAutomatically convert standard WordPress galleries to beautiful lightbox gallery slider.', 'magazine-hoot' ), $themename, '<hr>' ),
 		'img' => $imagepath . 'premium-lightbox.jpg',
 		);
 
 	$features[] = array(
 		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
 		'name' => sprintf( esc_html__( 'Developers %1$slove {LESS}', 'magazine-hoot' ), '<br />' ),
-		'desc' => esc_html__( 'CSS is passe! Developers love the modularity and ease of using LESS, which is why Magazine Hoot Premium comes with properly organized LESS files for the main stylesheet.', 'magazine-hoot' ),
+		/* Translators: 1 is the theme name */
+		'desc' => sprintf( esc_html__( 'CSS is passe! Developers love the modularity and ease of using LESS, which is why %1$s Premium comes with properly organized LESS files for the main stylesheet.', 'magazine-hoot' ), $themename ),
 		'img' => $imagepath . 'premium-lesscss.jpg',
 		);
 
@@ -441,7 +448,8 @@ function maghoot_theme_upstrings( $string ) {
 			array(
 				/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
 				'name' => sprintf( esc_html__( 'Continued %1$sLifetime Updates', 'magazine-hoot' ), '<br />' ),
-				'desc' => esc_html__( 'You will help support the continued development of Magazine Hoot - ensuring it works with future versions of WordPress for years to come.', 'magazine-hoot' ),
+				/* Translators: 1 is the theme name */
+				'desc' => sprintf( esc_html__( 'You will help support the continued development of %1$s - ensuring it works with future versions of WordPress for years to come.', 'magazine-hoot' ), $themename ),
 				// 'img' => $imagepath . 'premium-updates.jpg',
 				),
 			),
@@ -449,9 +457,9 @@ function maghoot_theme_upstrings( $string ) {
 
 	$features[] = array(
 		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
-		'name' => sprintf( esc_html__( 'Premium %1$sPriority Support', 'magazine-hoot' ), '<br />' ),
+		'name' => esc_html__( 'Priority Support', 'magazine-hoot' ),
 		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
-		'desc' => sprintf( esc_html__( 'Need help setting up Magazine Hoot? Upgrading to Magazine Hoot Premium gives you prioritized support. We have a growing support team ready to help you with your questions.%1$sNeed small modifications? If you are not a developer yourself, you can count on our support staff to help you with CSS snippets to get the look you are after. Best of all, your changes will persist across updates.', 'magazine-hoot' ), '<hr>' ),
+		'desc' => sprintf( esc_html__( 'Need help setting up %1$s? Upgrading to %1$s Premium gives you prioritized support. We have a growing support team ready to help you with your questions.%2$sNeed small modifications? If you are not a developer yourself, you can count on our support staff to help you with CSS snippets to get the look you are after. Best of all, your changes will persist across updates.', 'magazine-hoot' ), $themename, '<hr>' ),
 		'img' => $imagepath . 'premium-support.jpg',
 		// 'style' => 'side',
 		);
@@ -524,24 +532,14 @@ function maghoot_theme_upstrings( $string ) {
 		'style' => 'img-bottom',
 		);
 
-	$quickstart[] = array(
+	$hootthemeimplink = ( ! class_exists( 'HootImport' ) ) ? '<a href="' . esc_url( admin_url( "themes.php?page={$slug}-welcome&tab=plugins" ) ) . '">' . esc_html__( 'Go to the Plugins tab to install Hoot Import plugin', 'magazine-hoot' ) . '</a>' : '<a href="' . esc_url( admin_url( "themes.php?page=hoot-import" ) ) . '">' . esc_html__( 'Go to Hoot Import', 'magazine-hoot' ) . '</a>';
+		$quickstart[] = array(
 		/* Translators: 1 is a line break */
-		'name' => sprintf( esc_html__( '[Optional]%1$sInstall Demo Content', 'magazine-hoot' ), '<br />' ),
+		'name' => sprintf( esc_html__( 'Install%1$sDemo Content', 'magazine-hoot' ), '<br />' )
+				. '<small>' . esc_html__( '[ optional ]', 'magazine-hoot' ) . '</small>',
 		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
-		'desc' => sprintf( esc_html__( '%14$sIt is recommended to install demo content only on a fresh new site%15$s
-			Installing demo content is the easiest way to setup your theme and make it look like the %10$sDemo Site%13$s.%9$s
-			%7$sYour existing content (posts, pages, categories, images etc) will NOT be deleted or modified. However new content (posts, images, menus etc.) will be imported and added to your site.%8$s
-			%1$s
-			%3$sDownload the Demo files from the %11$sSupport Documentation%13$s%4$s
-			%3$sInstall the %11$sOne Click Demo Import%13$s plugin.%4$s
-			%3$sIn your wp-admin, go to %5$sAppearance &gt; Import Demo Data%6$s%4$s
-			%3$sUpload the files from Step 1 and click the %5$sImport%6$s button.%4$s
-			%2$s', 'magazine-hoot' ), '<ol>', '</ol>', '<li>', '</li>', '<strong>', '</strong>', '<em>', '</em>', '<hr>',
-										'<a href="https://demo.wphoot.com/magazine-hoot/" target="_blank">',
-										'<a href="https://wphoot.com/support/magazine-hoot/#docs-section-demo-content-free" target="_blank">',
-										'<a href="https://wordpress.org/plugins/one-click-demo-import/" target="_blank">',
-										'</a>', '<h4>', '</h4>'
-				),
+		'desc' => sprintf( esc_html__( 'Importing demo content is the easiest way to setup your theme and make it look like the %1$sDemo Site%2$s', 'magazine-hoot' ), '<a href="https://demo.wphoot.com/JNES@SLUG/" target="_blank">', '</a>' )
+			. '<hr />' . $hootthemeimplink,
 		);
 
 
