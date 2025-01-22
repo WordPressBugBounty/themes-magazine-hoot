@@ -91,7 +91,9 @@ li.deactivated .hybridextend-sortlistitem-head .sortlistitem-display { backgroun
 /* @includes Customizer Layout Mods */
 
 body.hybridextend-displaying-flyicon #hybridextend-flyicon { left: 0; width: 300px; z-index: 9; }
-body.hybridextend-displaying-flyicon #customize-preview { opacity: .4; left: 300px; }
+body.hybridextend-displaying-flyicon #customize-preview { left: 300px; } /* opacity: .4; */
+body.hybridextend-displaying-flyicon .preview-tablet #customize-preview,
+body.hybridextend-displaying-flyicon .preview-mobile #customize-preview { left: calc(50% + 150px); }
 body.hybridextend-displaying-flyicon #customize-controls {}
 @media screen and (max-width: 640px) {
 	body.hybridextend-displaying-flyicon #hybridextend-flyicon { left: 0; width: 100%; position: fixed; z-index: 11; }
@@ -122,13 +124,14 @@ body.hybridextend-displaying-flyicon #customize-controls {}
 #customize-controls .hybridextend-customize-control-group-blocks { display: none !important; }
 /* Group Fly */
 #hybridextend-flygroup-content > ul { margin: 0; }
-#hybridextend-flygroup-content .hybridextend-customize-control-group-blocks { display: list-item !important; }
 
 /** Displaying Group Fly **/
 /* @includes Customizer Layout Mods */
 
 body.hybridextend-displaying-flygroup #hybridextend-flygroup { left: 0; width: 300px; z-index: 9; }
-body.hybridextend-displaying-flygroup #customize-preview { opacity: .4; left: 300px; }
+body.hybridextend-displaying-flygroup #customize-preview { left: 300px; } /* opacity: .4; */
+body.hybridextend-displaying-flygroup .preview-tablet #customize-preview,
+body.hybridextend-displaying-flygroup .preview-mobile #customize-preview { left: calc(50% + 150px); }
 body.hybridextend-displaying-flygroup #customize-controls {}
 @media screen and (max-width: 640px) {
 	body.hybridextend-displaying-flygroup #hybridextend-flygroup { left: 0; width: 100%; position: fixed; z-index: 11; }
@@ -235,6 +238,8 @@ label { cursor: inherit; }
 	   -moz-transition: all .2s;
 	        transition: all .2s; 
 }
+.hybridextend-displaying-flygroup #hybridextend-flygroup,
+.hybridextend-displaying-flyicon #hybridextend-flyicon { box-shadow: 2px 2px 12px 0px rgba(100, 100, 100, 0.5); }
 .hybridextend-flypanel-nav { position: absolute; left: 0; right: 0; height: 45px; padding: 0 15px; line-height: 45px; z-index: 10; background: #eee; }
 .hybridextend-flypanel-header { border-bottom: 1px solid #ddd; top: 0; }
 .hybridextend-flypanel-footer { border-top: 1px solid #ddd; bottom: 0; }

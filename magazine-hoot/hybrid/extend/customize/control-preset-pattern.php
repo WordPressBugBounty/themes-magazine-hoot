@@ -57,12 +57,12 @@ class HybridExtend_Customize_Betterbackground_Control extends WP_Customize_Contr
 	 * @since 2.0.0
 	 */
 	protected function render() {
-		$id    = 'customize-control-' . str_replace( '[', '-', str_replace( ']', '', $this->id ) );
+		$id    = 'customize-control-' . str_replace( array( '[', ']' ), array( '-', '' ), $this->id );
 		$class = 'customize-control customize-control-' . $this->type . ' hybridextend-customize-control-' . $this->type . $this->background;
 
-		?><li id="<?php echo esc_attr( $id ); ?>" class="<?php echo esc_attr( $class ); ?>">
-			<?php $this->render_content(); ?>
-		</li><?php
+		printf( '<li id="%s" class="%s">', esc_attr( $id ), esc_attr( $class ) );
+		$this->render_content();
+		echo '</li>';
 	}
 
 	/**

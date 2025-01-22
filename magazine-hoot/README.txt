@@ -27,6 +27,14 @@ You can look at the theme instructions at https://wphoot.com/support/magazine-ho
 
 == Changelog ==
 
+= 1.11.1 =
+* # Hybrid 4.0.0 HybridExtend 2.2.10 #
+* Fix customizer flypanel display minor bug
+* WooCommerce Cart and Checkout Block Styling
+* WooCommerce buttons styling
+* Dont load Maghoot_WPTT_WebFont_Loader if option not active in customizer
+* Update WooCommerce Templates
+
 = 1.11.0 =
 * # Hybrid 4.0.0 HybridExtend 2.2.10 #
 * Fix "Creation of dynamic property is deprecated" for PHP 8.2

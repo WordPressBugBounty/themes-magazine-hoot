@@ -117,7 +117,7 @@ function maghoot_dynamic_cssrules() {
 					) );
 
 	hybridextend_add_css_rule( array(
-						'selector'  => 'input[type="submit"], #submit, .button',
+						'selector'  => 'body.wordpress input[type="submit"], body.wordpress #submit, body.wordpress .button' . ',' . '.wc-block-components-button, .woocommerce #respond input#submit.alt, .woocommerce a.button.alt, .woocommerce button.button.alt, .woocommerce input.button.alt',
 						'property'  => array(
 							// property  => array( value, idtag, important, typography_reset ),
 							'background' => array( $accent_color, 'accent_color' ),
@@ -126,7 +126,7 @@ function maghoot_dynamic_cssrules() {
 					) );
 
 	hybridextend_add_css_rule( array(
-						'selector'  => 'input[type="submit"]:hover, #submit:hover, .button:hover, input[type="submit"]:focus, #submit:focus, .button:focus',
+						'selector'  => 'body.wordpress input[type="submit"]:hover, body.wordpress #submit:hover, body.wordpress .button:hover, body.wordpress input[type="submit"]:focus, body.wordpress #submit:focus, body.wordpress .button:focus' . ',' . '.wc-block-components-button:hover, .woocommerce #respond input#submit.alt:hover, .woocommerce a.button.alt:hover, .woocommerce button.button.alt:hover, .woocommerce input.button.alt',
 						'property'  => array(
 							// property  => array( value, idtag, important, typography_reset ),
 							'background' => array( $accent_color_dark ),

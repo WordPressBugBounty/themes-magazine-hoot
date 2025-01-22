@@ -75,12 +75,12 @@ class HybridExtend_Customize_Group_Control extends WP_Customize_Control {
 	 * @since 2.0.0
 	 */
 	protected function render() {
-		$id    = 'customize-control-' . str_replace( '[', '-', str_replace( ']', '', $this->id ) );
+		$id    = 'customize-control-' . str_replace( array( '[', ']' ), array( '-', '' ), $this->id );
 		$class = 'customize-control customize-control-' . $this->type . ' hybridextend-customize-control-' . $this->type . $this->group . ' hybridextend-control-id-' . $this->identifier . ' ' . sanitize_html_class( $this->startwrap );
 
-		?><li id="<?php echo esc_attr( $id ); ?>" class="<?php echo esc_attr( $class ); ?>">
-			<?php $this->render_content(); ?>
-		</li><?php
+		printf( '<li id="%s" class="%s">', esc_attr( $id ), esc_attr( $class ) );
+		$this->render_content();
+		echo '</li>';
 	}
 
 	/**
@@ -263,6 +263,7 @@ function hybridextend_customize_footer_groupcontent() {
 			</div>
 		</div>
 		<div id="hybridextend-flygroup-content" class="hybridextend-flypanel-content">
+			<ul></ul>
 		</div>
 		<div class="hybridextend-flypanel-footer hybridextend-flypanel-nav">
 			<div class="primary-actions">

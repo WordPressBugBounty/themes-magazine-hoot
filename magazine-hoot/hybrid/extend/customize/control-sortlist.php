@@ -393,6 +393,7 @@ function hybridextend_customize_sanitize_sortlist( $value, $setting ) {
  * @return array|false
  */
 function hybridextend_sortlist( $rawvalue, $returnid = false ) {
+	if ( ! is_string( $rawvalue ) ) return false;
 
 	$valuearray = array();
 	if ( !empty( $rawvalue ) ) { // We either have a default, or value stored

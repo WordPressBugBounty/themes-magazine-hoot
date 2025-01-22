@@ -1,6 +1,6 @@
 /*
 Theme Name: Magazine Hoot
-Version: 1.11.0
+Version: 1.11.1
 Text Domain: magazine-hoot
 Author: wpHoot
 Author URI: https://wphoot.com/
@@ -1156,9 +1156,9 @@ input[type="checkbox"][readonly] {
   background-color: transparent;
 }
 /*** Buttons Default ***/
-input[type="submit"],
-#submit,
-.button {
+body.wordpress input[type="submit"],
+body.wordpress #submit,
+body.wordpress .button {
   background: #d22254;
   color: #ffffff;
   display: inline-block;
@@ -1174,38 +1174,38 @@ input[type="submit"],
   -moz-box-shadow: inset 0 -2px 0 0 rgba(0, 0, 0, 0.33);
   box-shadow: inset 0 -2px 0 0 rgba(0, 0, 0, 0.33);
 }
-input[type="submit"]:hover,
-#submit:hover,
-.button:hover,
-input[type="submit"]:focus,
-#submit:focus,
-.button:focus {
+body.wordpress input[type="submit"]:hover,
+body.wordpress #submit:hover,
+body.wordpress .button:hover,
+body.wordpress input[type="submit"]:focus,
+body.wordpress #submit:focus,
+body.wordpress .button:focus {
   -webkit-box-shadow: inset 0 -2px 0 0 rgba(0, 0, 0, 0.33);
   -moz-box-shadow: inset 0 -2px 0 0 rgba(0, 0, 0, 0.33);
   box-shadow: inset 0 -2px 0 0 rgba(0, 0, 0, 0.33);
   background: #c11143;
   color: #ffffff;
 }
-input[type="submit"]:focus,
-#submit:focus,
-.button:focus {
+body.wordpress input[type="submit"]:focus,
+body.wordpress #submit:focus,
+body.wordpress .button:focus {
   outline: thin dotted;
   outline-offset: -4px;
 }
-input[type="submit"]:active,
-#submit:active,
-.button:active {
+body.wordpress input[type="submit"]:active,
+body.wordpress #submit:active,
+body.wordpress .button:active {
   -webkit-box-shadow: inset 0 2px 0 0 rgba(0, 0, 0, 0.33);
   -moz-box-shadow: inset 0 2px 0 0 rgba(0, 0, 0, 0.33);
   box-shadow: inset 0 2px 0 0 rgba(0, 0, 0, 0.33);
 }
-input[type="submit"].aligncenter,
-#submit.aligncenter,
-.button.aligncenter {
+body.wordpress input[type="submit"].aligncenter,
+body.wordpress #submit.aligncenter,
+body.wordpress .button.aligncenter {
   max-width: 60%;
 }
-#submit a,
-.button a {
+body.wordpress #submit a,
+body.wordpress .button a {
   color: inherit;
 }
 /*** Button Sizes ***/
@@ -5239,6 +5239,73 @@ div.lSAction > a.lSPrev:hover {
   text-align: right;
   padding: 4px 0.5em 4px 0;
   background: rgba(0, 0, 0, 0.04);
+}
+.wc-block-components-button[disabled] {
+  opacity: 0.5;
+}
+body.wordpress .wc-block-components-button {
+  -webkit-transition: color 0.2s ease-in, background-color 0.2s linear, box-shadow linear 0.2s;
+  -moz-transition: color 0.2s ease-in, background-color 0.2s linear, box-shadow linear 0.2s;
+  -o-transition: color 0.2s ease-in, background-color 0.2s linear, box-shadow linear 0.2s;
+  transition: color 0.2s ease-in, background-color 0.2s linear, box-shadow linear 0.2s;
+}
+.wc-block-components-button,
+.woocommerce #respond input#submit.alt,
+.woocommerce a.button.alt,
+.woocommerce button.button.alt,
+.woocommerce input.button.alt {
+  background: #d22254;
+  color: #ffffff;
+  border: none;
+  text-decoration: none;
+}
+.wc-block-components-button:hover,
+.woocommerce #respond input#submit.alt:hover,
+.woocommerce a.button.alt:hover,
+.woocommerce button.button.alt:hover,
+.woocommerce input.button.alt:hover {
+  background: #c11143;
+  color: #ffffff;
+}
+.woocommerce #respond input#submit.disabled,
+.woocommerce #respond input#submit:disabled,
+.woocommerce #respond input#submit:disabled[disabled],
+.woocommerce a.button.disabled,
+.woocommerce a.button:disabled,
+.woocommerce a.button:disabled[disabled],
+.woocommerce button.button.disabled,
+.woocommerce button.button:disabled,
+.woocommerce button.button:disabled[disabled],
+.woocommerce input.button.disabled,
+.woocommerce input.button:disabled,
+.woocommerce input.button:disabled[disabled],
+.woocommerce #respond input#submit.alt.disabled,
+.woocommerce #respond input#submit.alt.disabled:hover,
+.woocommerce #respond input#submit.alt:disabled,
+.woocommerce #respond input#submit.alt:disabled:hover,
+.woocommerce #respond input#submit.alt:disabled[disabled],
+.woocommerce #respond input#submit.alt:disabled[disabled]:hover,
+.woocommerce a.button.alt.disabled,
+.woocommerce a.button.alt.disabled:hover,
+.woocommerce a.button.alt:disabled,
+.woocommerce a.button.alt:disabled:hover,
+.woocommerce a.button.alt:disabled[disabled],
+.woocommerce a.button.alt:disabled[disabled]:hover,
+.woocommerce button.button.alt.disabled,
+.woocommerce button.button.alt.disabled:hover,
+.woocommerce button.button.alt:disabled,
+.woocommerce button.button.alt:disabled:hover,
+.woocommerce button.button.alt:disabled[disabled],
+.woocommerce button.button.alt:disabled[disabled]:hover,
+.woocommerce input.button.alt.disabled,
+.woocommerce input.button.alt.disabled:hover,
+.woocommerce input.button.alt:disabled,
+.woocommerce input.button.alt:disabled:hover,
+.woocommerce input.button.alt:disabled[disabled],
+.woocommerce input.button.alt:disabled[disabled]:hover {
+  background: #ddd;
+  color: #666;
+  border: solid 1px #aaa;
 }
 .woocommerce #respond input#submit,
 .woocommerce a.button,

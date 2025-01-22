@@ -677,7 +677,7 @@ function maghoot_theme_customizer_options() {
 		'section'     => $section,
 		'type'        => 'checkbox',
 		'default'     => 0,
-		'description' => esc_html__( 'Enable this to load Google Fonts (if used) from your own site instead of Google servers.', 'magazine-hoot' ),
+		'description' => esc_html__( 'Enable this to load Google Fonts (if used) from your own site instead of Google servers. This is required for GDPR compliance for EU visitors.', 'magazine-hoot' ),
 		'priority'    => 243,
 	);
 

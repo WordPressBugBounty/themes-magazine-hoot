@@ -899,15 +899,18 @@ function hybridextend_get_attr( $slug, $context = '', $attr = '' ) {
 
 	/* Create attributes */
 	// Get ID and class first
-	foreach ( array( 'id', 'class' ) as $key )
+	foreach ( array( 'id', 'class' ) as $key ) {
 		if ( !empty( $attr[$key] ) ) {
 			$out .= sprintf( ' %s="%s"', $key, esc_attr( $attr[$key] ) );
-			unset( $attr[ $key ] );
 		}
+		unset( $attr[ $key ] );
+	}
 	// Remaining attributes
 	foreach ( $attr as $name => $value )
 		if ( $value !== false )
-			$out .= !empty( $value ) ? sprintf( ' %s="%s"', esc_html( $name ), esc_attr( $value ) ) : esc_html( " {$name}" );
+			$out .= !empty( $value ) ?
+					sprintf( ' %s="%s"', esc_html( $name ), esc_attr( $value ) ) :
+					( $name !== 'style' ? ' ' . esc_attr( $name ) : '' );
 
 	return trim( $out );
 }
