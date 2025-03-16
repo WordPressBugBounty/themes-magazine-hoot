@@ -123,7 +123,7 @@ if ( ! function_exists( 'maghoot_hootimport_theme_config' ) ) {
 			'menu_title' => __( 'Import Magazine Hoot Demo', 'magazine-hoot' ),
 			'theme_name' => HYBRIDEXTEND_THEME_NAME,
 			'theme_version' => HYBRIDEXTEND_THEME_VERSION,
-			'theme_img' => ( function_exists( 'maghoot_abouttag' ) ? maghoot_abouttag( 'fullshot' ) : '' ),
+			'theme_img' => function_exists( 'maghoot_abouttag' ) ? (  maghoot_abouttag( 'fullshot' ) !==  maghoot_abouttag( 'shot' ) ?  maghoot_abouttag( 'fullshot' ) : '' ) : '',
 		) );
 	}
 }

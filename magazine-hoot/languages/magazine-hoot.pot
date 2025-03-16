@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Magazine Hoot\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-22 13:38+0530\n"
+"POT-Creation-Date: 2025-03-17 00:37+0530\n"
 "PO-Revision-Date: 2021-07-08 00:13+0530\n"
 "Last-Translator: wpHoot <admin@wphoot.com>\n"
 "Language-Team: wpHoot <admin@wphoot.com>\n"
@@ -2894,27 +2894,27 @@ msgstr ""
 msgid "No Tags"
 msgstr ""
 
-#: ../include/template-helpers.php:437
-msgid "With:"
-msgstr ""
-
-#: ../include/template-helpers.php:439
+#: ../include/template-helpers.php:438
 msgid "0 Comments"
 msgstr ""
 
-#: ../include/template-helpers.php:440
+#: ../include/template-helpers.php:439
 msgid "1 Comment"
 msgstr ""
 
-#: ../include/template-helpers.php:441
+#: ../include/template-helpers.php:440
 msgid "% Comments"
 msgstr ""
 
-#: ../include/template-helpers.php:447
+#: ../include/template-helpers.php:443
+msgid "With:"
+msgstr ""
+
+#: ../include/template-helpers.php:450
 msgid "Edit This"
 msgstr ""
 
-#: ../include/template-helpers.php:530
+#: ../include/template-helpers.php:533
 msgid "Apologies, but no entries were found."
 msgstr ""
 

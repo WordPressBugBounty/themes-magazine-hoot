@@ -1,6 +1,6 @@
 /*
 Theme Name: Magazine Hoot
-Version: 1.11.1
+Version: 1.11.2
 Text Domain: magazine-hoot
 Author: wpHoot
 Author URI: https://wphoot.com/
@@ -1044,7 +1044,6 @@ input[type="url"],
 input[type="search"],
 input[type="tel"],
 input[type="color"] {
-  -webkit-appearance: none;
   border: 1px solid #ddd;
   padding: 6px 8px;
   color: #666;
@@ -1119,6 +1118,9 @@ textarea {
 }
 select {
   width: 215px;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
   background: #fff url('images/select.png') no-repeat center right;
 }
 select[multiple],

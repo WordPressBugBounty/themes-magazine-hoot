@@ -434,12 +434,15 @@ function maghoot_meta_info_blocks( $args = '', $context = '', $editlink = true )
 	endif;
 
 	if ( !empty( $display['comments'] ) && comments_open() ) :
-		$blocks['comments']['label'] = __( 'With:', 'magazine-hoot' );
 		ob_start();
 		comments_popup_link(__( '0 Comments', 'magazine-hoot' ),
 							__( '1 Comment', 'magazine-hoot' ),
 							__( '% Comments', 'magazine-hoot' ), 'comments-link', '' );
-		$blocks['comments']['content'] = ob_get_clean();
+		$comments = ob_get_clean();
+		if ( !empty( $comments ) ) {
+			$blocks['comments']['label'] = __( 'With:', 'magazine-hoot' );
+			$blocks['comments']['content'] = $comments;
+		}
 	endif;
 
 	if ( $editlink && $edit_link = get_edit_post_link() ) :

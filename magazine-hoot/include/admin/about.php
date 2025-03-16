@@ -81,10 +81,10 @@ function maghoot_appearance_subpage() {
 					<?php if ( $hasupsell ) : ?>
 					<a class="button button-primary" href="https://wphoot.com/themes/magazine-hoot/" target="_blank"><span class="dashicons dashicons-dashboard"></span> <?php esc_html_e( 'View Premium', 'magazine-hoot' ) ?></a>
 					<?php endif; ?>
-					<a class="button" href="https://demo.wphoot.com/JNES@SLUG/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo', 'magazine-hoot' ) ?></a>
+					<a class="button" href="https://demo.wphoot.com/magazine-hoot/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo', 'magazine-hoot' ) ?></a>
 					<a class="button" href="https://wphoot.com/support/magazine-hoot/" target="_blank"><span class="dashicons dashicons-editor-aligncenter"></span> <?php esc_html_e( 'Documentation', 'magazine-hoot' ) ?></a>
 					<a class="button" href="https://wphoot.com/support/" target="_blank"><span class="dashicons dashicons-sos"></span> <?php esc_html_e( 'Get Support', 'magazine-hoot' ) ?></a>
-					<a class="button" href="https://wordpress.org/support/theme/JNES@SLUG/reviews/#new-post" target="_blank"><span class="dashicons dashicons-thumbs-up"></span> <?php esc_html_e( 'Rate Us', 'magazine-hoot' ) ?></a>
+					<a class="button" href="https://wordpress.org/support/theme/magazine-hoot/reviews/#new-post" target="_blank"><span class="dashicons dashicons-thumbs-up"></span> <?php esc_html_e( 'Rate Us', 'magazine-hoot' ) ?></a>
 				</p>
 				<?php do_action( 'maghoot_theme_after_about_textlinks', $slug ); ?>
 			</div>
@@ -113,7 +113,7 @@ function maghoot_appearance_subpage() {
 					printf( esc_html__( 'If you have enjoyed using %1$s, you are going to love %2$s%1$s Premium%3$s.%4$sIt is a robust upgrade to %1$s that gives you many useful features.', 'magazine-hoot' ), $themename, '<strong>', '</strong>', '<br />' );
 					?></p>
 				<p class="maghoot-tab-cta centered">
-					<a class="button button-secondary secondary-cta" href="https://demo.wphoot.com/JNES@SLUG/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo Site', 'magazine-hoot' ) ?></a>
+					<a class="button button-secondary secondary-cta" href="https://demo.wphoot.com/magazine-hoot/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo Site', 'magazine-hoot' ) ?></a>
 					<a class="button button-primary primary-cta" href="https://wphoot.com/themes/magazine-hoot/" target="_blank"><span class="dashicons dashicons-dashboard"></span> <?php
 						/* Translators: 1 is the theme name */
 						printf( esc_html__( 'Buy %1$s Premium', 'magazine-hoot' ), $themename );
@@ -122,7 +122,7 @@ function maghoot_appearance_subpage() {
 				<div class="maghoot-tab-sub"><div class="maghoot-tab-subinner">
 					<?php maghoot_tabsections( 'features' ); ?>
 					<div class="tabsection maghoot-tab-cta centered">
-						<a class="button button-secondary secondary-cta" href="https://demo.wphoot.com/JNES@SLUG/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo Site', 'magazine-hoot' ) ?></a>
+						<a class="button button-secondary secondary-cta" href="https://demo.wphoot.com/magazine-hoot/" target="_blank"><span class="dashicons dashicons-welcome-view-site"></span> <?php esc_html_e( 'View Demo Site', 'magazine-hoot' ) ?></a>
 						<a class="button button-primary primary-cta" href="https://wphoot.com/themes/magazine-hoot/" target="_blank"><span class="dashicons dashicons-dashboard"></span> <?php
 							/* Translators: 1 is the theme name */
 							printf( esc_html__( 'Buy %1$s Premium', 'magazine-hoot' ), $themename );
@@ -538,7 +538,7 @@ function maghoot_upstrings( $string ) {
 		'name' => sprintf( esc_html__( 'Install%1$sDemo Content', 'magazine-hoot' ), '<br />' )
 				. '<small>' . esc_html__( '[ optional ]', 'magazine-hoot' ) . '</small>',
 		/* Translators: The %s are placeholders for HTML, so the order can't be changed. */
-		'desc' => sprintf( esc_html__( 'Importing demo content is the easiest way to setup your theme and make it look like the %1$sDemo Site%2$s', 'magazine-hoot' ), '<a href="https://demo.wphoot.com/JNES@SLUG/" target="_blank">', '</a>' )
+		'desc' => sprintf( esc_html__( 'Importing demo content is the easiest way to setup your theme and make it look like the %1$sDemo Site%2$s', 'magazine-hoot' ), '<a href="https://demo.wphoot.com/magazine-hoot/" target="_blank">', '</a>' )
 			. '<hr />' . $hootthemeimplink,
 		);
 

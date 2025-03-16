@@ -27,6 +27,12 @@ You can look at the theme instructions at https://wphoot.com/support/magazine-ho
 
 == Changelog ==
 
+= 1.11.2 =
+* # Hybrid 4.0.0 HybridExtend 2.2.10 #
+* bugfix: Remove label 'With' when no comments and comments are closed
+* Fix image link for hoot import
+* Fix links typo
+
 = 1.11.1 =
 * # Hybrid 4.0.0 HybridExtend 2.2.10 #
 * Fix customizer flypanel display minor bug
